@@ -19,5 +19,75 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await seed(strapi);
+
+    // Add public API routes that bypass Strapi permissions
+    strapi.server.routes([
+      {
+        method: 'GET',
+        path: '/api/public/reviews',
+        handler: async (ctx) => {
+          try {
+            const reviews = await strapi.db
+              .query('api::review.review')
+              .findMany({
+                where: {
+                  publishedAt: {
+                    $notNull: true,
+                  },
+                },
+                orderBy: {
+                  publishedAt: 'desc',
+                },
+              });
+
+            ctx.body = {
+              data: reviews,
+              meta: {
+                pagination: {
+                  page: 1,
+                  pageSize: reviews.length,
+                  pageCount: 1,
+                  total: reviews.length,
+                },
+              },
+            };
+          } catch (error) {
+            ctx.status = 500;
+            ctx.body = {
+              error: 'Failed to fetch reviews',
+              message: error.message,
+            };
+          }
+        },
+      },
+      {
+        method: 'GET',
+        path: '/api/public/reviews/:id',
+        handler: async (ctx) => {
+          const { id } = ctx.params;
+          try {
+            const review = await strapi.db
+              .query('api::review.review')
+              .findOne({
+                where: { id },
+              });
+
+            if (!review) {
+              ctx.status = 404;
+              ctx.body = { error: 'Review not found' };
+              return;
+            }
+
+            ctx.body = { data: review };
+          } catch (error) {
+            ctx.status = 500;
+            ctx.body = {
+              error: 'Failed to fetch review',
+              message: error.message,
+            };
+          }
+        },
+      },
+    ]);
   },
 };
