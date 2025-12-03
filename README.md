@@ -1,52 +1,58 @@
-# 🚀 Getting started with Strapi
+# Backend (Strapi v4)
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+This folder contains the Strapi CMS backend for the Review Site.
 
-### `develop`
+## Quick Start
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+See the main project [README.md](../README.md) and [QUICKSTART.md](../QUICKSTART.md) for complete setup instructions.
 
-```
+## Local Development
+
+```powershell
+cd backend
+npm install
 npm run develop
-# or
-yarn develop
 ```
 
-### `start`
+Strapi will start at `http://localhost:1337`. Navigate to `/admin` to create an admin account and manage reviews.
 
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
+## Content-Type: Review
 
-```
-npm run start
-# or
-yarn start
-```
-
-### `build`
-
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
-
-```
-npm run build
-# or
-yarn build
+```typescript
+interface Review {
+  title: string;           // Title of the review
+  slug: string;            // URL-safe identifier (auto-generated from title)
+  summary: string;         // Short summary
+  body: string;            // Full review (rich text)
+  rating: integer;         // 0-10 scale
+  coverImage: string;      // Image URL
+  category: string;        // e.g., "Movie"
+  author: string;          // Author name
+  publishedAt: datetime;   // Publication date
+}
 ```
 
-## ⚙️ Deployment
+## Seeding Data
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+The database is auto-seeded with 10 sample movie reviews on first run. To manually import:
 
+```powershell
+node scripts/import-seeds.js
 ```
-yarn strapi deploy
-```
 
-## 📚 Learn more
+Environment variables:
+- `STRAPI_URL` (default: http://localhost:1337)
+- `STRAPI_API_TOKEN` (optional, for protected APIs)
 
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
+## Deployment
+
+For production deployment to Render, see [DEPLOYMENT.md](../DEPLOYMENT.md).
+
+Environment variables needed:
+- `NODE_ENV=production`
+- `DATABASE_URL` (PostgreSQL connection string)
+- `JWT_SECRET` (random string)
+- `ADMIN_JWT_SECRET` (random string)
 
 Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
 
