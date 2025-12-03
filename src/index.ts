@@ -1,5 +1,6 @@
 import type { Core } from '@strapi/strapi';
 import { seed } from './extensions/database-seed';
+import setPublicPermissions from './extensions/set-public-permissions';
 
 export default {
   /**
@@ -19,5 +20,6 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await seed(strapi);
+    await setPublicPermissions({ strapi });
   },
 };
