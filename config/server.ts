@@ -4,4 +4,10 @@ export default ({ env }) => ({
   app: {
     keys: env.array('APP_KEYS'),
   },
+  cors: {
+    enabled: true,
+    origin: ['*'], // Allow all origins in production
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    headers: ['Content-Type', 'Authorization'],
+  },
 });
